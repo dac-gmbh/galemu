@@ -73,7 +73,7 @@ trait GenericConnection {
     fn create_transaction<'s>(&'s self) -> Bound<'s, Self::Transaction>;
 }
 
-trait GenericTransaction: for<'a> BoundExt {
+trait GenericTransaction: for<'a> BoundExt<'a> {
     // on nightly use the "arbitrary self type" feature
     fn commit(me: Bound<'s, Self>);
 }

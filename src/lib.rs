@@ -246,6 +246,7 @@ impl<'a, T> Bound<'a, T>
     /// Also note that using this method can have **other safety
     /// constraints defined by `T`** as such it _should_ only be
     /// used by `T` to create a `Bound` wrapper of itself.
+    #[inline]
     #[allow(unsafe_code)]
     pub unsafe fn new(inner: T) -> Self {
         Bound {
@@ -263,6 +264,8 @@ impl<'a, T> Bound<'a, T>
     /// lifetime `'a`. But a `&mut` borrow would allow
     /// switching the content of two `Bound` instances, which
     /// might brake safety constraints.
+    #[inline]
+    #[doc(hidden)]
     #[allow(unsafe_code)]
     pub unsafe fn _get_mut(&mut self) -> &mut T {
         &mut self.inner
@@ -303,6 +306,7 @@ impl<'a, T> Deref for Bound<'a, T>
 {
     type Target = T;
 
+    #[inline]
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -381,6 +385,7 @@ macro_rules! create_gal_wrapper_type {
             ///
             /// This will lift the lifetime from the inner type to the `Bound` wrapper,
             /// wrapping the inner type into this type while erasing it's lifetime
+            #[inline]
             $v fn new<$lt>(value: $Inner<$lt>) -> $crate::Bound<$lt, Self> {
                 use std::{ mem::{self, ManuallyDrop}, cell::UnsafeCell };
 
@@ -393,6 +398,7 @@ macro_rules! create_gal_wrapper_type {
                 }
             }
 
+            #[inline]
             #[allow(unused)]
             $v fn get<'s: 'b, 'b>(me: &'b Bound<'s, Self>) -> &'b $Inner<'s> {
                 let ptr: *const $Inner<'static> = me.static_cell.get();
@@ -404,6 +410,7 @@ macro_rules! create_gal_wrapper_type {
                 }
             }
 
+            #[inline]
             #[allow(unused)]
             $v fn get_mut<'s: 'b, 'b>(me: &'b mut Bound<'s, Self>) -> &'b mut $Inner<'s> {
                 let ptr: *mut $Inner<'static> = me.static_cell.get();

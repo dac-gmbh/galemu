@@ -276,7 +276,14 @@ impl<'a, T> Bound<'a, T>
     /// [`BoundExt::pre_drop()`] turning this instance into `T`
     /// might cause the leakage of some resources and should
     /// only be done by methods which are aware of this problems.
-    pub fn _into_inner(mut self) -> T {
+    ///
+    /// It still should be safe to call `_into_inner` but using
+    /// it normally only should make sense in combination with
+    /// unsafe code.
+    #[inline]
+    #[doc(hidden)]
+    #[allow(unsafe_code)]
+    pub unsafe fn _into_inner(mut self) -> T {
         // workaround for having no "no-drop" destruction
         let inner = {
             let &mut Bound { limiter:_, ref mut inner } = &mut self;
@@ -408,14 +415,14 @@ macro_rules! create_gal_wrapper_type {
                 }
             }
 
+            #[inline]
             #[allow(unused)]
             $v fn into_inner<'s>(me: Bound<'s, Self>) -> $Inner<'s> {
                 use std::{ mem::{self, ManuallyDrop}, cell::UnsafeCell };
 
-                let $Type { static_cell } = me._into_inner();
-
                 let non_static_cell = $crate::unsafe_block! {
                     "the $Inner<'static> originally had been a $Inner<'s>" => {
+                        let $Type { static_cell } = me._into_inner();
                         mem::transmute::<
                             ManuallyDrop<UnsafeCell<$Inner<'static>>>,
                             ManuallyDrop<UnsafeCell<$Inner<'s>>>

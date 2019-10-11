@@ -1,11 +1,11 @@
 [package]
 name = "galemu"
-version = "0.2.2"
-authors = ["Philipp Korber <p.korber@1aim.com>"]
+version = "0.2.3"
+authors = ["Philipp Korber <p.korber@dac.eu>"]
 
 description = "Provides a workaround for generic associated types (GAT) limited to lifetimes (GAL)"
 documentation = "https://docs.rs/galemu"
-repository = "https://github.com/1aim/galemu"
+repository = "https://github.com/dac-gmbh/galemu"
 
 readme = "./README.md"
 keywords = ["lifetime", "associated", "GAT", "GAL", "static" ]
@@ -13,7 +13,9 @@ categories = [ "data-structures" ]
 license = "MIT OR Apache-2.0"
 
 [badges]
-maintenance = { status = "passively-maintained" }
+maintenance = { status = "as-is" }
 
 
 [dependencies]
+
+
